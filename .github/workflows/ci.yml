@@ -24,12 +24,11 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    # Adicione aqui a permissão de execução antes de iniciar o script de dev
     - name: Grant execute permissions for nodemon
       run: chmod +x node_modules/.bin/nodemon
 
-    - name: Run the app in development mode
-      run: npm run dev
+    - name: Run the app in development mode with npx
+      run: npx nodemon imc.js
 
     - name: Run tests
       run: npm test
