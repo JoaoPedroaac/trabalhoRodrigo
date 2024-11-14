@@ -29,3 +29,10 @@ jobs:
 
     - name: Run tests
       run: npm test
+
+    
+    - name: Grant execute permissions for nodemon
+      run: chmod +x node_modules/.bin/nodemon
+
+    - name: Run the app in development mode
+      run: npm run dev

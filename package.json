@@ -2,11 +2,10 @@
   "name": "trabalhorodrigo",
   "version": "1.0.0",
   "main": "imc.js",
- "scripts": {
-  "start": "node imc.js",
-  "dev": "nodemon imc.js"
-},
-
+  "scripts": {
+    "start": "node imc.js",
+    "dev": "nodemon imc.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
