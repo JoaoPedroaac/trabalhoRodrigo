@@ -1,45 +1,57 @@
-name: Deploy Docker Container
+name: CI/CD Pipeline to Build and Deploy Docker Image
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the code
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # Step 2: Log in to DockerHub
-      - name: Log in to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+    # Step 2: Log in to DockerHub
+    - name: Log in to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 3: Build Docker image
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/myapp:latest .
+    # Step 3: Build the Docker image
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/trabalhorodrigo:latest .
 
-      # Step 4: Push Docker image to DockerHub
-      - name: Push Docker image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+    # Step 4: Push the Docker image to DockerHub
+    - name: Push Docker image to DockerHub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/trabalhorodrigo:latest
 
-      # Step 5: Deploy to remote server via SSH
-      - name: Deploy to remote server
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/myapp:latest
-            docker stop myapp || true
-            docker rm myapp || true
-            docker run -d --name myapp -p 80:80 ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+    # Step 1: Install SSH Client
+    - name: Install SSH Client
+      run: sudo apt-get install -y ssh
+
+    # Step 2: Deploy the container on remote server
+    - name: Deploy to Remote Server
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: 201.23.3.86
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/trabalhorodrigo:latest
+          docker stop trabalhorodrigo || true
+          docker rm trabalhorodrigo || true
+          docker run -d -p 8093:3000 --name trabalhorodrigo ${{ secrets.DOCKER_USERNAME }}/trabalhorodrigo:latest
