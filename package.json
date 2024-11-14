@@ -4,7 +4,7 @@
   "main": "imc.js",
   "scripts": {
     "start": "node imc.js",
-    "dev": "nodemon imc.js"
+    "dev": "node node_modules/.bin/nodemon imc.js"
   },
   "keywords": [],
   "author": "",
