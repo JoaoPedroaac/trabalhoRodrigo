@@ -48,14 +48,14 @@ const server = http.createServer((req, res) => {
     res.end(`
       <html>
         <head>
-          <title>Resultado do IMC</title>
+          <title>Resultado</title>
         </head>
         <body>
           <h1>Calculadora de IMC</h1>
           <form action="/calcularIMC" method="get">
             <label for="peso">Peso (kg):</label>
             <input type="number" step="0.1" id="peso" name="peso" required><br>
-            <label for="altura">Altura (m):</label>
+            <label for="ala">Altura (m):</label>
             <input type="number" step="0.01" id="altura" name="altura" required><br>
             <button type="submit">Calcular IMC</button>
           </form>
